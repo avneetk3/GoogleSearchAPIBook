@@ -29,7 +29,7 @@ mutation addUser($username: String!, $password: String!, $email: String!) {
         description
       }
     }
-    token
+    username
   }
 }
 `;
