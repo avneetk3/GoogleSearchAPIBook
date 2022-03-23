@@ -5,19 +5,37 @@ import SavedBooks from './pages/SavedBooks';
 import Navbar from './components/Navbar';
 
 // adding  libraries import statements
-import { ApolloProvider } from '@apollo/client';
+import { ApolloProvider,
+  createHttpLink,
+  InMemoryCache }
+   from '@apollo/client';
+
+   import { setContext } from "@apollo/client/link/context";
 import ApolloClient from 'apollo-boost';
 
-/*const httpLink = createHttpLink({
+const httpLink = createHttpLink({
   uri: 'http://localhost:3001/graphql',
 });
 
-const client = new ApolloClient({
-  link: httpLink,
-  cache: new InMemoryCache(),
-});*/
+// pass down jwt in the context so its available to all links
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem("id_token");
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
 
 const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
+});
+
+
+
+/*const client = new ApolloClient({
   // uri: 'http://localhost:3001/graphql'
   request: operation => {
     const token = localStorage.getItem('id_token');
@@ -29,11 +47,12 @@ const client = new ApolloClient({
     })
   },
   uri: '/graphql'
-});
+});*/
 
 
 function App() {
   return (
+    <ApolloProvider client={client}>
     <Router>
       <>
         <Navbar />
@@ -44,6 +63,9 @@ function App() {
         </Switch>
       </>
     </Router>
+    
+    </ApolloProvider>
+    
   );
 }
 
