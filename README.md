@@ -10,6 +10,8 @@ SO THAT I can keep a list of books to purchase
  
  #TECHNOLOGY USED 
  The technologies used were, React, Apollo, GraphQL, Node.js, HTML, CSS, Javascript
+ #App Deployed at : ://git.heroku.com/afternoon-spire-73821.git
+ 
 
 #Contributions
 By Avneet Kaur
