@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
-import { useMutation } from '@apollo/react-hooks';
+//import { useMutation } from '@apollo/react-hooks'; // to fix error : Apollo Client Error: Could not find "client" in the context or passed in as an option. Wrap the root component in an <ApolloProvider>
+import { useMutation } from "@apollo/client";
+
 import { Form, Button, Alert } from 'react-bootstrap';
 
-import { createUser } from '../utils/API';
+//import { createUser } from '../utils/API';
 import Auth from '../utils/auth';
 
 import { ADD_USER } from '../utils/mutations';
+
+//queries for adding mutation
+//import { signUp_Mutation } from '../utils/queries'
 
 const SignupForm = () => {
   // set initial form state
@@ -16,7 +21,9 @@ const SignupForm = () => {
   const [showAlert, setShowAlert] = useState(false);
 
 // mutationFunction for adding a user
-const [add_user, { error }] = useMutation(ADD_USER);
+//const [add_user, { error }] = useMutation(ADD_USER);
+const [userSignUp,{error}] = useMutation(ADD_USER)
+
 
 
   const handleInputChange = (event) => {
@@ -24,37 +31,67 @@ const [add_user, { error }] = useMutation(ADD_USER);
     setUserFormData({ ...userFormData, [name]: value });
   };
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
 
-    // check if form has everything (as per react-bootstrap docs)
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+  // const handleFormSubmit = async (event) => {
+  //   event.preventDefault();
+
+  //   // check if form has everything (as per react-bootstrap docs)
+  //   const form = event.currentTarget;
+  //   if (form.checkValidity() === false) {
+  //     event.preventDefault();
+  //     event.stopPropagation();
+  //   }
+
+  //   try {
+  //     const response = await add_user(userFormData);
+
+  //     if (!response.ok) {
+  //       throw new Error('something went wrong!');
+  //     }
+
+  //     const { token, user } = await response.json();
+  //     console.log(user);
+  //     Auth.login(token);
+  //   } catch (err) {
+  //     console.error(err);
+  //     setShowAlert(true);
+  //   }
+
+  //   setUserFormData({
+  //     username: '',
+  //     email: '',
+  //     password: '',
+  //   });
+  // };
+
+  //Adding code for Mutations and handle form
+  const handleFormSubmit = async(e)=>{
+
+    e.preventDefault();
+    console.log(userFormData)
 
     try {
-      const response = await add_user(userFormData);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
+      const response = await userSignUp({variables:userFormData})
+      console.log(response.data.addUser)
+      if (!response.data.addUser) {
+          throw new Error('User not added something went wrong');
       }
+  
+        const { token, user } = response.data.addUser;
+        console.log(user);
+        Auth.login(token);
+      } catch (error) {
+        console.error(error);
+        setShowAlert(true);
+      }
+  
+      setUserFormData({
+        username: '',
+        email: '',
+        password: '',
+      });
 
-      const { token, user } = await response.json();
-      console.log(user);
-      Auth.login(token);
-    } catch (err) {
-      console.error(err);
-      setShowAlert(true);
-    }
-
-    setUserFormData({
-      username: '',
-      email: '',
-      password: '',
-    });
-  };
+  }
 
   return (
     <>

@@ -10,7 +10,6 @@ export const GET_MYID = gql`
       email
       bookCount
       savedBooks {
-        # _id
         bookId
         authors
         image

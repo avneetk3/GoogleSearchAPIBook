@@ -5,16 +5,17 @@ import SavedBooks from './pages/SavedBooks';
 import Navbar from './components/Navbar';
 
 // adding  libraries import statements
-import { ApolloProvider,
+import { ApolloClient,
+  ApolloProvider,
   createHttpLink,
-  InMemoryCache }
-   from '@apollo/client';
+  InMemoryCache }  from '@apollo/client';
 
-   import { setContext } from "@apollo/client/link/context";
-import ApolloClient from 'apollo-boost';
+import { setContext } from "@apollo/client/link/context";
+//import ApolloClient from 'apollo-boost';
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:3001/graphql',
+ uri: 'http://localhost:3001/graphql',
+// uri: '/graphql',
 });
 
 // pass down jwt in the context so its available to all links
